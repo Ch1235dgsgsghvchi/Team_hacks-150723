@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Password Management System</h1>
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username">
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password">
+        </div>
+        <div class="form-group">
+            <label for="newPassword">New Password:</label>
+            <input type="password" id="newPassword" name="newPassword">
+        </div>
+        <button onclick="addPassword()">Add Password</button>
+        <button onclick="viewPasswords()">View Passwords</button>
+        <button onclick="resetPassword()">Reset Password</button>
+        <pre id="output"></pre>
+    </div>
+
+    <script>
+        function addPassword() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            // Call your C backend function here
+            document.getElementById('output').textContent = `Password for ${username} added successfully.`;
+        }
+
+        function viewPasswords() {
+            // Call your C backend function here
+            document.getElementById('output').textContent = 'Viewing all passwords...';
+        }
+
+        function resetPassword() {
+            const username = document.getElementById('username').value;
+            const newPassword = document.getElementById('newPassword').value;
+            // Call your C backend function here
+            document.getElementById('output').textContent = `Password for ${username} reset successfully.`;
+        }
+    </script>
+</body>
+</html>
