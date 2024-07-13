@@ -1,0 +1,118 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define PASSWORD_FILE "passwords.txt"
+#define MAX_USERNAME_LENGTH 50
+#define MAX_PASSWORD_LENGTH 50
+
+void addPassword(const char* username, const char* password);
+void viewPasswords();
+void resetPassword(const char* username, const char* newPassword);
+int findUser(const char* username, char* foundPassword);
+
+int main() {
+    int choice;
+    char username[MAX_USERNAME_LENGTH];
+    char password[MAX_PASSWORD_LENGTH];
+    char newPassword[MAX_PASSWORD_LENGTH];
+
+    while (1) {
+        printf("\nPassword Management System\n");
+        printf("1. Add Password\n");
+        printf("2. View Passwords\n");
+        printf("3. Reset Password\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter username: ");
+                scanf("%s", username);
+                printf("Enter password: ");
+                scanf("%s", password);
+                addPassword(username, password);
+                break;
+            case 2:
+                viewPasswords();
+                break;
+            case 3:
+                printf("Enter username: ");
+                scanf("%s", username);
+                printf("Enter new password: ");
+                scanf("%s", newPassword);
+                resetPassword(username, newPassword);
+                break;
+            case 4:
+                exit(0);
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
+    }
+
+    return 0;
+}
+
+void addPassword(const char* username, const char* password) {
+    FILE *file = fopen(PASSWORD_FILE, "a");
+    if (file == NULL) {
+        printf("Unable to open file.\n");
+        return;
+    }
+    fprintf(file, "%s %s\n", username, password);
+    fclose(file);
+    printf("Password added successfully.\n");
+}
+
+void viewPasswords() {
+    FILE *file = fopen(PASSWORD_FILE, "r");
+    char line[MAX_USERNAME_LENGTH + MAX_PASSWORD_LENGTH + 2];
+
+    if (file == NULL) {
+        printf("Unable to open file.\n");
+        return;
+    }
+
+    printf("Stored Passwords:\n");
+    while (fgets(line, sizeof(line), file)) {
+        printf("%s", line);
+    }
+    fclose(file);
+}
+
+void resetPassword(const char* username, const char* newPassword) {
+    FILE *file = fopen(PASSWORD_FILE, "r");
+    FILE *tempFile = fopen("temp.txt", "w");
+    char line[MAX_USERNAME_LENGTH + MAX_PASSWORD_LENGTH + 2];
+    char foundPassword[MAX_PASSWORD_LENGTH];
+    int found = 0;
+
+    if (file == NULL || tempFile == NULL) {
+        printf("Unable to open file.\n");
+        return;
+    }
+
+    while (fgets(line, sizeof(line), file)) {
+        char currentUsername[MAX_USERNAME_LENGTH];
+        sscanf(line, "%s %s", currentUsername, foundPassword);
+        if (strcmp(currentUsername, username) == 0) {
+            fprintf(tempFile, "%s %s\n", username, newPassword);
+            found = 1;
+        } else {
+            fprintf(tempFile, "%s", line);
+        }
+    }
+
+    fclose(file);
+    fclose(tempFile);
+
+    if (found) {
+        remove(PASSWORD_FILE);
+        rename("temp.txt", PASSWORD_FILE);
+        printf("Password reset successfully.\n");
+    } else {
+        remove("temp.txt");
+        printf("User not found.\n");
+    }
+}
